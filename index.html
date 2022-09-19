@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="estilos.css"></link>
+    <title>Lista General del Colegio Cristiano Everest</title>
+</head>
+<body>
+    <div id ="app">
+        <div class="cabecera">
+            <h4 id="subtitulo" class="invisible">Colegio Cristiano Everest</h4>
+            <div id="fecha"></div>
+            <h2 id="titulo" class="invisible">Lista General de Estudiantes</h2>
+        </div>
+        <div id="main">
+            <!--
+                Por implementar:
+                <button class="main-btn-font">Nueva lista</button>
+                <button type="file" multiple="true" accept="*" id="cargar" onclick="cargarCopiaDeSeguridad()" class="main-btn-font">Cargar copia de seguridad</button>
+            -->
+            <input placeholder="🔍 Buscar un estudiante..." class="main-btn-font" type="text" id="buscador" onkeyup="buscar()"\><button onclick="cargarVistaRegistroEstudiante()" class="main-btn-font">Registrar</button><button id="imprimir" onclick="imprimir()" class="main-btn-font">Imprimir</button><button id="guardar" onclick="guardarCopiaDeSeguridad(Lista)" class="main-btn-font">Copia de seguridad</button><button onclick="Lista=[];actualizarVistaCuadricula(cuadriculaHTML(), Lista, FechaDeCuadricula)" class="main-btn-font danger">Limpiar</button>
+            <button class="main-btn">➡</button><button class="main-btn">⬅</button>
+            <div id="cuadricula"></div>
+        </div>
+    </div>
+    <script src="funciones.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
