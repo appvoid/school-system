@@ -28,7 +28,7 @@ const cargarCopiaDeSeguridad = (nombre) => {
     // Actualiza la cuadricula con los datos obtenidos
     .then(Lista => actualizarVistaCuadricula(Cuadricula, Lista))
 }
-const registrar = (list, nom, resp, pres, fech=obtenerFechaActual()) => {
+const registrar = (list, nom, resp, pres, fech=FechaDeCuadricula) => {
     // Envia un object a la lista como registro completo de un estudiante
     list.push({
         // Crea un number ID al azar del 1 al 10000, poco probable que se repita
@@ -40,6 +40,8 @@ const registrar = (list, nom, resp, pres, fech=obtenerFechaActual()) => {
         // Crea un array con datos de presencialidad
         asistencia: [{fecha: fech, presente: pres}]
     })
+    localStorage.Lista = JSON.stringify(Lista)
+    agregarFechaALista(fech)
 }
 const cambioVistaPresencial = (id,tipo) => {
     // Cambia el estado interno y visual de los elementos
@@ -58,6 +60,7 @@ const cambioVistaPresencial = (id,tipo) => {
             td.classList = "presente"
             Lista[indice].asistencia[0].presente = true
         }
+        localStorage.Lista = JSON.stringify(Lista)
     }
 }
 const generarCuadricula = (Lista, FechaEscogida) =>{
@@ -92,7 +95,7 @@ const actualizarVistaCuadricula = (Contenedor, Lista, FechaEscogida) => {
 }
 const actualizarVistaFecha = (fecha="") => {
     // Actualiza la fecha dependiendo de si el argumento fecha cambia o no
-    document.querySelector('#fecha').textContent = (fecha === "" ? obtenerFechaActual() : fecha)
+    document.querySelector('#fecha').textContent = (fecha === "" ? ListaDeFechas[ListaDeFechas.length-1] : fecha)
 }
 const imprimir = () => {
     // Agrupacion de todos los botones y titulos en un arrays unicos
@@ -167,27 +170,80 @@ const registrarDesdeVista = () => {
         }
     }
 }
-const registrarDesdePrompt = ()=> {
-    let estudiante = prompt("Esciba el nombre del estudiante", "");
-    if (estudiante == null || estudiante == "") {
-      alert("Proceso de registro cancelado!")
-    } else {
-        let responsables = []
-        let nuevoResponsable = prompt("Esciba el nombre del responsable a cargo", "");
-        if (nuevoResponsable == null || nuevoResponsable == "") {
-            alert("Proceso de registro cancelado!")
-        } else {
-            responsables.push(nuevoResponsable)
-            registrar(Lista, estudiante, responsables, true)
-            actualizarVistaCuadricula(cuadriculaHTML(), Lista, FechaDeCuadricula)
-        }
+const cargarRegistrosDePrueba = () => {
+    registrar(Lista, "Elian Ventura Valdez", ["Marleny Valdez","Ezequiel Ventura Brito"], false, "19/9/2022")
+    registrar(Lista, "Jhonny Pedro Henriquez Soriel", ["Fulgencio Salazar","Samanta Suriel"], true, "19/9/2022")
+    registrar(Lista, "Toby Soly Martinez", ["Allen Fernandez","Dory Garcia", "Martha Hernandez"], false, "19/9/2022")
+    registrar(Lista, "Danny Gomez", ["Peter Pon", "Danny Perez"], true,"19/9/2022")
+    registrar(Lista, "Libni Simei Ventura Valdez", ["Marleny Valdez","Ezequiel Ventura Brito"], true, "19/9/2022")
+    registrar(Lista, "Libni Simei Ventura Valdez", ["Marleny Valdez","Ezequiel Ventura Brito"], false, "19/9/2022")
+    registrar(Lista, "Abigail Perez", ["Fernandez Matias Peralta","Golly Perez"], true, "20/9/2022")
+    registrar(Lista, "Jhonny Pedro Henriquez Soriel", ["Fulgencio Salazar","Samanta Suriel"], true, "21/9/2022")
+}
+const agregarFechaALista = (fecha) => {
+    // Agrega fechas solo si no estan en la lista
+    if (!ListaDeFechas.includes(fecha)){
+        ListaDeFechas.push(fecha)
+        localStorage.ListaDeFechas = JSON.stringify(ListaDeFechas)
     }
 }
-const cargarRegistrosDePrueba = () => {
-    registrar(Lista, "Elian Ventura Valdez", ["Marleny Valdez","Ezequiel Ventura Brito"], false)
-    registrar(Lista, "Toby Soly Martinez", ["Allen Fernandez","Dory Garcia", "Martha Hernandez"], false)
-    registrar(Lista, "Danny Gomez", ["Peter Pon", "Danny Perez"], true)
-    registrar(Lista, "Libni Simei Ventura Valdez", ["Marleny Valdez","Ezequiel Ventura Brito"], false)
-    registrar(Lista, "Abigail Perez", ["Fernandez Matias Peralta","Golly Perez"], true)
-    registrar(Lista, "Jhonny Pedro Henriquez Soriel", ["Fulgencio Salazar","Samanta Suriel"], true)
+const cargarFechas = () => {
+    try { // Array global de fechas unicas
+        // Intentar cargar las fechas ya guardadas
+        ListaDeFechas = JSON.parse(localStorage.ListaDeFechas)
+    } catch {
+        // Sino, crear una nueva vacia
+        ListaDeFechas = []
+    }
+    
+    // Array global de paginacion por fecha
+    if (ListaDeFechas[ListaDeFechas.length-1] !== undefined) {
+        // El array global naturalmente siempre buscara el ultimo dia de creacion
+        agregarFechaALista(obtenerFechaActual())
+        FechaDeCuadricula = ListaDeFechas[ListaDeFechas.length-1]
+    } else {
+        agregarFechaALista(obtenerFechaActual())
+        FechaDeCuadricula = obtenerFechaActual()
+    }
+}
+const cargarLista = () => {
+    // Array global donde se almacena la informacion de los estudiantes
+    try { // Array global de fechas unicas
+        // Intentar cargar las fechas ya guardadas
+        Lista = JSON.parse(localStorage.Lista)
+    } catch {
+        // Sino, crear una nueva vacia
+        Lista = []
+    }
+}
+const paginar = (direccion) => {
+    const ultimaPosicion = FechaDeCuadricula
+    let posicionActual = ListaDeFechas.indexOf(FechaDeCuadricula)
+    if (direccion === "derecha"){
+        FechaDeCuadricula = ListaDeFechas[posicionActual+1]
+        if (FechaDeCuadricula === undefined) {
+            if (ListaDeFechas.indexOf(posicionActual)== -1){
+                FechaDeCuadricula = ultimaPosicion
+            } else {
+                FechaDeCuadricula = ListaDeFechas[ListaDeFechas.indexOf(posicionActual)+1]
+            }
+        }
+    } else if (direccion === "izquierda") {
+        FechaDeCuadricula = ListaDeFechas[posicionActual-1]
+        if (ListaDeFechas.indexOf(FechaDeCuadricula) > -1){
+            FechaDeCuadricula = ListaDeFechas[posicionActual-1]
+        } else {
+            FechaDeCuadricula = ListaDeFechas[posicionActual]
+        }
+    }
+    actualizarVistaCuadricula(cuadriculaHTML(), Lista, FechaDeCuadricula)
+    actualizarVistaFecha(FechaDeCuadricula)
+}
+// TODO:
+const agregarResponsableDesdeVista = () => {
+    const inputRegistro = document.querySelector("#inputRegistroResponsable")
+    if (inputRegistro.value !== "" && inputRegistro.value !== null){
+        inputRegistro.value = ""
+        inputRegistro.focus()
+    }
 }

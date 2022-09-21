@@ -20,8 +20,8 @@
                 <button class="main-btn-font">Nueva lista</button>
                 <button type="file" multiple="true" accept="*" id="cargar" onclick="cargarCopiaDeSeguridad()" class="main-btn-font">Cargar copia de seguridad</button>
             -->
-            <input placeholder="🔍 Buscar un estudiante..." class="main-btn-font" type="text" id="buscador" onkeyup="buscar()"\><button onclick="cargarVistaRegistroEstudiante()" class="main-btn-font">Registrar</button><button id="imprimir" onclick="imprimir()" class="main-btn-font">Imprimir</button><button id="guardar" onclick="guardarCopiaDeSeguridad(Lista)" class="main-btn-font">Copia de seguridad</button><button onclick="Lista=[];actualizarVistaCuadricula(cuadriculaHTML(), Lista, FechaDeCuadricula)" class="main-btn-font danger">Limpiar</button>
-            <button class="main-btn">➡</button><button class="main-btn">⬅</button>
+            <input placeholder="🔍 Buscar un estudiante..." class="main-btn-font" type="text" id="buscador" onkeyup="buscar()"\><button onclick="cargarVistaRegistroEstudiante()" class="main-btn-font">Registrar</button><button id="imprimir" onclick="imprimir()" class="main-btn-font">Imprimir</button><button id="guardar" onclick="guardarCopiaDeSeguridad(Lista)" class="main-btn-font">Copia de seguridad</button><button onclick="Lista=[];localStorage.Lista = JSON.stringify(Lista);actualizarVistaCuadricula(cuadriculaHTML(), Lista, FechaDeCuadricula)" class="main-btn-font danger">Eliminar todo</button>
+            <button onclick="paginar('derecha')" class="main-btn">➡</button><button onclick="paginar('izquierda')" class="main-btn">⬅</button>
             <div id="cuadricula"></div>
         </div>
     </div>
